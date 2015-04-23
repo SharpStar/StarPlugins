@@ -50,9 +50,7 @@ namespace Star.WebPanel
 		protected override void ConfigureConventions(NancyConventions nancyConventions)
 		{
 			base.ConfigureConventions(nancyConventions);
-
-			Console.WriteLine("TESTING 123");
-
+			
 			nancyConventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory("Scripts", "Scripts"));
 			nancyConventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory("lib", "lib"));
 		}

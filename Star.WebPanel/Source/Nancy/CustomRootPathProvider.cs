@@ -29,7 +29,7 @@ namespace Star.WebPanel.Nancy
 	{
 		public string GetRootPath()
 		{
-			return Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
+			return Path.GetDirectoryName(Assembly.GetAssembly(typeof(StarWeb)).Location);
 		}
 	}
 }

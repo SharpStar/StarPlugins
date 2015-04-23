@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Nancy;
@@ -52,7 +50,7 @@ namespace Star.WebPanel.Nancy
 			}
 		}
 
-		public Task<ClaimsPrincipal> GetClaimsPrincial(Guid identifier)
+		public Task<StarPrincipal> GetStarPrincipal(Guid identifier)
 		{
 			using (StarDb db = new StarDb())
 			{
@@ -64,9 +62,9 @@ namespace Star.WebPanel.Nancy
 					});
 
 					if (acct == null)
-						return Task.FromResult<ClaimsPrincipal>(null);
+						return Task.FromResult<StarPrincipal>(null);
 
-					return Task.FromResult(new ClaimsPrincipal(new StarUserIdentity { Identifier = identifier, UserName = acct.Username }));
+					return Task.FromResult(new StarPrincipal(new StarUserIdentity { Identifier = identifier, UserName = acct.Username }));
 				}
 			}
 		}

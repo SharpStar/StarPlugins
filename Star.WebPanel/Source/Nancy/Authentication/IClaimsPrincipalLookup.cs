@@ -10,6 +10,6 @@ namespace Star.WebPanel.Nancy.Authentication
 	//https://github.com/damianh/Nancy.Authentication.Forms.Owin
 	public interface IClaimsPrincipalLookup
 	{
-		Task<ClaimsPrincipal> GetClaimsPrincial(Guid identifier);
+		Task<StarPrincipal> GetStarPrincipal(Guid identifier);
 	}
 }

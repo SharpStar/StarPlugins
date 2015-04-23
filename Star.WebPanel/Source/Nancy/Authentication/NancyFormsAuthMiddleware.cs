@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin;
@@ -57,7 +55,7 @@ namespace Star.WebPanel.Nancy.Authentication
 					return;
 				}
 				
-				ClaimsPrincipal claimsPrincipal = await _claimsPrincipalLookup.GetClaimsPrincial(userId);
+				StarPrincipal claimsPrincipal = await _claimsPrincipalLookup.GetStarPrincipal(userId);
 
 				context.Request.User = claimsPrincipal;
 				//if (context.Environment.ContainsKey(ServerUser))

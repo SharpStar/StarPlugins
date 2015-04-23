@@ -156,6 +156,7 @@
     <Compile Include="Nancy\Authentication\IClaimsPrincipalLookup.cs" />
     <Compile Include="Nancy\Authentication\NancyContextExtensions.cs" />
     <Compile Include="Nancy\Authentication\NancyFormsAuthMiddleware.cs" />
+    <Compile Include="Nancy\Authentication\StarPrincipal.cs" />
     <Compile Include="Nancy\CustomRootPathProvider.cs" />
     <Compile Include="Nancy\RazorConfig.cs" />
     <Compile Include="Nancy\SignalRDependencyResolver.cs" />
