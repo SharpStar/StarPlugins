@@ -45,7 +45,9 @@ namespace Star.WebPanel.Nancy
 					if (acct == null)
 						return null;
 
-					return new StarUserIdentity { Identifier = identifier, UserName = acct.Username, Claims = acct.Permissions.Where(p => p.Allowed).Select(p => p.Name) };
+					var claims = acct.Permissions != null ? acct.Permissions.Where(p => p.Allowed).Select(p => p.Name) : new List<string>();
+
+					return new StarUserIdentity { Identifier = identifier, UserName = acct.Username, Claims = claims };
 				}
 			}
 		}

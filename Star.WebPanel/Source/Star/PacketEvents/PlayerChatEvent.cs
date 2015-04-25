@@ -30,16 +30,16 @@ namespace Star.WebPanel.Star.PacketEvents
 {
 	public class PlayerChatEvent
 	{
-		[PacketEvent(PacketType.ChatReceived)]
-		public void OnChatReceived(PacketEvent evt)
+		[PacketEvent(PacketType.ChatSend)]
+		public void OnChatSend(PacketEvent evt)
 		{
-			ChatReceivePacket packet = evt.Packet as ChatReceivePacket;
+			ChatSendPacket packet = evt.Packet as ChatSendPacket;
 
-			if (packet != null)
+			if (packet != null && !packet.Text.StartsWith("/"))
 			{
 				var hub = GlobalHost.ConnectionManager.GetHubContext<StarHub>();
 
-				hub.Clients.All.chatReceived(packet.Name.StripColors(), packet.Message);
+				hub.Clients.All.chatReceived(evt.Proxy.Player.NameWithoutColor, packet.Text);
             }
 		}
 

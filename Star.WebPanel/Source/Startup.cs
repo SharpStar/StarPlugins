@@ -38,6 +38,9 @@ namespace Star.WebPanel
 		{
 			var configuration = new HubConfiguration { EnableDetailedErrors = true };
 
+			StaticConfiguration.DisableErrorTraces = false;
+
+
 			string pass = StarWeb.WebConfig.AuthPassword;
 			byte[] salt = Convert.FromBase64String(StarWeb.WebConfig.AuthSalt);
 
