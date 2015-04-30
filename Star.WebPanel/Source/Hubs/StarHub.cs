@@ -21,8 +21,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
+using Star.WebPanel.Nancy;
+using Star.WebPanel.Utils;
 using StarLib;
+using StarLib.Database;
+using StarLib.Database.Models;
 using StarLib.Extensions;
+using StarLib.Logging;
 using StarLib.Server;
 
 namespace Star.WebPanel.Hubs
@@ -39,11 +44,55 @@ namespace Star.WebPanel.Hubs
 
 				return;
 			}
+			
+			StarUserIdentity ident = (StarUserIdentity)Context.User.Identity;
+			if (ident.Banned)
+			{
+				Clients.Caller.banned();
+
+				return;
+			}
+			
+			using (StarDb db = new StarDb())
+			{
+				Ban ban = db.GetBanByAccount(ident.Id);
+				
+				if (ban != null)
+				{
+					Clients.Caller.banned();
+
+					return;
+				}
+			}
 
 			Parallel.ForEach(StarMain.Instance.Server.Proxies, proxy =>
 			{
 				proxy.SendChatMessage(Context.User.Identity.Name, message);
 			});
-        }
+
+			Clients.Group("chat").chatReceived(ColorUtils.Colorize(Context.User.Identity.Name), ColorUtils.Colorize(message));
+		}
+
+		public void joinChat()
+		{
+			if (IsBanned())
+			{
+				Clients.Caller.banned();
+
+				return;
+			}
+
+			Groups.Add(Context.ConnectionId, "chat");
+		}
+
+		private bool IsBanned()
+		{
+            if (Context.User == null)
+                return false;
+
+			StarUserIdentity ident = (StarUserIdentity)Context.User.Identity;
+
+			return ident.Banned;
+		}
 	}
 }

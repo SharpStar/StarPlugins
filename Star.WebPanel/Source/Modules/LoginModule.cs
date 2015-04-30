@@ -20,6 +20,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nancy;
+using Nancy.Authentication.Forms;
+using StarLib.Database;
+using StarLib.Database.Models;
+using StarLib.Security;
 
 namespace Star.WebPanel.Modules
 {
@@ -27,7 +31,35 @@ namespace Star.WebPanel.Modules
 	{
 		public LoginModule() : base("/login")
 		{
-			Get["/"] = _ => View["Index"];
+			Get["/"] = _ =>
+			{
+				if (Context.CurrentUser != null)
+					return Response.AsRedirect("~/");
+
+				return View["Index"];
+			};
+
+			Post["/"] = p =>
+			{
+				string username = Context.Request.Form.username;
+				string password = Context.Request.Form.password;
+
+				using (StarDb db = new StarDb())
+				{
+					Account account = db.GetAccountByUsername(username);
+
+					if (account == null)
+						return View["Index"];
+
+					string hash = StarSecurity.GenerateHash(account.Username, password, Encoding.UTF8.GetBytes(account.PasswordSalt));
+
+					if (account.PasswordHash == hash)
+						return this.LoginAndRedirect(account.InternalId);
+				}
+
+				return View["Index"];
+			};
+
 		}
 	}
 }

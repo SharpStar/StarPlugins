@@ -17,27 +17,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using StarLib.Events.Packets;
-using StarLib.Extensions;
-using StarLib.Logging;
-using StarLib.Packets;
-using StarLib.Packets.Starbound;
 
-namespace Star.TestPlugin.Events
+namespace Star.WebPanel.Utils
 {
-	public class ConnResponseEventListener
+	public class ColorUtils
 	{
-		[PacketEvent(PacketType.ConnectionSuccess, PacketEventType.AfterSent)]
-		public void OnConnResponse(PacketEvent evt)
+		public static string Colorize(string message)
 		{
-			ConnectSuccessPacket packet = evt.Packet as ConnectSuccessPacket;
+			message = WebUtility.HtmlEncode(message);
 
-			if (packet != null)
+			Match match;
+			while ((match = Regex.Match(message, @"\^(\w+|#[\da-fA-F]{6});")).Success)
 			{
-				evt.Proxy.SendChatMessage("server", "Player " + evt.Proxy.Player.NameWithoutColor + " has connected!");
+				message = string.Format("{0}<font color='{1}'>{2}</font>",
+					WebUtility.HtmlEncode(message.Substring(0, match.Index)), WebUtility.HtmlEncode(match.Groups[1].Value), 
+					WebUtility.HtmlEncode(message.Substring(match.Index + match.Length)));
 			}
+
+			return message;
 		}
 	}
 }

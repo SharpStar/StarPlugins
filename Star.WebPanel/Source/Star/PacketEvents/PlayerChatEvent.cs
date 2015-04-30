@@ -17,14 +17,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Star.WebPanel.Hubs;
+using Star.WebPanel.Utils;
 using StarLib.Events.Packets;
 using StarLib.Extensions;
+using StarLib.Logging;
 using StarLib.Packets;
 using StarLib.Packets.Starbound;
+using StarLib.Starbound;
 
 namespace Star.WebPanel.Star.PacketEvents
 {
@@ -35,11 +40,11 @@ namespace Star.WebPanel.Star.PacketEvents
 		{
 			ChatSendPacket packet = evt.Packet as ChatSendPacket;
 
-			if (packet != null && !packet.Text.StartsWith("/"))
+			if (packet != null && !packet.Text.StartsWith("/") && packet.Mode == ChatSendMode.Broadcast)
 			{
 				var hub = GlobalHost.ConnectionManager.GetHubContext<StarHub>();
-
-				hub.Clients.All.chatReceived(evt.Proxy.Player.NameWithoutColor, packet.Text);
+				
+				hub.Clients.Group("chat").chatReceived(ColorUtils.Colorize(evt.Proxy.Player.Name), ColorUtils.Colorize(packet.Text));
             }
 		}
 

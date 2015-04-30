@@ -1,19 +1,57 @@
 ﻿@inherits Star.WebPanel.Nancy.StarRazorViewBase
 
+
 @{
 	Layout = "Views/Shared/_Layout.cshtml";
 }
 
-
+<div id="chat" style="overflow-y: scroll; height: 500px">
+</div>
+<div id="chatText">
+	<input id="chatInput" type="text" class="form-control" style="width:100%" />
+</div>
 
 @section scripts {
 
 	<script type="text/javascript">
 		$(function () {
 			starHub.client.chatReceived = function (name, message) {
-				
+			    $("#chat").append("&lt;" + name + "&gt; " + message + "<br/>");
+			    $("#chat").scrollTop($("#chat")[0].scrollHeight);
 			};
+
+			starHub.client.playerJoined = function (name) {
+			    $("#chat").append("<b>Player " + name + " joined</b><br/>");
+			    $("#chat").scrollTop($("#chat")[0].scrollHeight);
+			};
+
+			starHub.client.playerLeft = function (name) {
+			    $("#chat").append("<b>Player " + name + " left</b><br/>");
+			    $("#chat").scrollTop($("#chat")[0].scrollHeight);
+			}
+
+			starHub.client.authError = function () {
+				window.location.href = "@Url.Content("~/login")";
+			};
+
+			$(document).on("hubStarted", function () {
+				starHub.server.joinChat();
+			});
+
+			$("#chatInput").keypress(function (e) {
+				if (e.which == 13) {
+					sendMessage($("#chatInput").val());
+					$("#chatInput").val("");
+
+					return false;
+				}
+			});
+
 		});
+
+		function sendMessage(message) {
+			starHub.server.sendMessage(message);
+		}
 	</script>
 
 }

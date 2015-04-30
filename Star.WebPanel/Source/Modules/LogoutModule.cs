@@ -19,25 +19,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StarLib.Events.Packets;
-using StarLib.Extensions;
-using StarLib.Logging;
-using StarLib.Packets;
-using StarLib.Packets.Starbound;
+using Nancy;
+using Nancy.Authentication.Forms;
 
-namespace Star.TestPlugin.Events
+namespace Star.WebPanel.Modules
 {
-	public class ConnResponseEventListener
+	public class LogoutModule : NancyModule
 	{
-		[PacketEvent(PacketType.ConnectionSuccess, PacketEventType.AfterSent)]
-		public void OnConnResponse(PacketEvent evt)
+		public LogoutModule() : base("/logout")
 		{
-			ConnectSuccessPacket packet = evt.Packet as ConnectSuccessPacket;
-
-			if (packet != null)
-			{
-				evt.Proxy.SendChatMessage("server", "Player " + evt.Proxy.Player.NameWithoutColor + " has connected!");
-			}
+			Get["/"] = _ => this.LogoutAndRedirect("~/");
 		}
 	}
 }

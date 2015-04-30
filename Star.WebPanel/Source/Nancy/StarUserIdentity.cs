@@ -26,9 +26,13 @@ namespace Star.WebPanel.Nancy
 {
 	public class StarUserIdentity : IIdentity, IUserIdentity
 	{
+		public int Id { get; set; }
+
 		public Guid Identifier { get; set; }
 
 		public string UserName { get; set; }
+
+		public bool Banned { get; set; }
 
 		public IEnumerable<string> Claims { get; set; }
 

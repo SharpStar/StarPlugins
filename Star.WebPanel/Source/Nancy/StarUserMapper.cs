@@ -45,9 +45,7 @@ namespace Star.WebPanel.Nancy
 					if (acct == null)
 						return null;
 
-					var claims = acct.Permissions != null ? acct.Permissions.Where(p => p.Allowed).Select(p => p.Name) : new List<string>();
-
-					return new StarUserIdentity { Identifier = identifier, UserName = acct.Username, Claims = claims };
+					return acct.ToUserIdentity(identifier);
 				}
 			}
 		}
@@ -66,9 +64,20 @@ namespace Star.WebPanel.Nancy
 					if (acct == null)
 						return Task.FromResult<StarPrincipal>(null);
 
-					return Task.FromResult(new StarPrincipal(new StarUserIdentity { Identifier = identifier, UserName = acct.Username }));
+					return Task.FromResult(new StarPrincipal(acct.ToUserIdentity(identifier)));
 				}
 			}
 		}
+	}
+
+	public static class AccountExtensions
+	{
+		public static StarUserIdentity ToUserIdentity(this Account acct, Guid identifier)
+		{
+			var claims = acct.Permissions != null ? acct.Permissions.Where(p => p.Allowed).Select(p => p.Name).ToList() : new List<string>();
+			
+			return new StarUserIdentity { Id = acct.Id, Identifier = identifier, UserName = acct.Username,
+				Banned = acct.Banned, Claims = claims };
+        }
 	}
 }

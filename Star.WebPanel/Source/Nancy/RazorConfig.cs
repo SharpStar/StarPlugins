@@ -27,7 +27,7 @@ namespace Star.WebPanel.Nancy
 	{
 		public IEnumerable<string> GetAssemblyNames()
 		{
-			return new List<string>();
+			yield return "Nancy.ViewEngines.Razor";
 		}
 
 		public IEnumerable<string> GetDefaultNamespaces()

@@ -31,23 +31,9 @@ namespace Star.WebPanel.Modules
 		public HomeModule()
 			: base("/")
 		{
-			//this.RequiresAuthentication();
-
 			Get["/"] = _ => View["Index"];
 
 			Get["/chat"] = _ => View["Chat"];
-
-			Get["/testing"] = _ =>
-			{
-				this.RequiresAuthentication();
-
-				return string.Empty;
-			};
-
-            Get["/test"] = _ =>
-            {
-				return this.LoginWithoutRedirect(Guid.NewGuid());
-            };
 		}
 	}
 }
