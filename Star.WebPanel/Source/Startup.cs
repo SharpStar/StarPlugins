@@ -55,7 +55,6 @@ namespace Star.WebPanel
 			app.MapSignalR("/star", configuration);
 			app.UseNancy(opt =>
 			{
-				//opt.PerformPassThrough = context => context.Response.StatusCode == HttpStatusCode.NotFound;
 				opt.Bootstrapper = new Bootstrapper();
 			});
 

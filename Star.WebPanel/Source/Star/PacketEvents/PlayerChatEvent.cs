@@ -35,16 +35,16 @@ namespace Star.WebPanel.Star.PacketEvents
 {
 	public class PlayerChatEvent
 	{
-		[PacketEvent(PacketType.ChatSend)]
+        private readonly IHubContext _hub = GlobalHost.ConnectionManager.GetHubContext<StarHub>();
+
+        [PacketEvent(PacketType.ChatSend)]
 		public void OnChatSend(PacketEvent evt)
 		{
 			ChatSendPacket packet = evt.Packet as ChatSendPacket;
 
 			if (packet != null && !packet.Text.StartsWith("/") && packet.Mode == ChatSendMode.Broadcast)
 			{
-				var hub = GlobalHost.ConnectionManager.GetHubContext<StarHub>();
-				
-				hub.Clients.Group("chat").chatReceived(ColorUtils.Colorize(evt.Proxy.Player.Name), ColorUtils.Colorize(packet.Text));
+				_hub.Clients.Group("chat").chatReceived(ColorUtils.Colorize(evt.Proxy.Player.Name), ColorUtils.Colorize(packet.Text));
             }
 		}
 

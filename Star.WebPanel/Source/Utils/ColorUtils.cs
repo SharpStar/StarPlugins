@@ -24,21 +24,20 @@ using System.Threading.Tasks;
 
 namespace Star.WebPanel.Utils
 {
-	public class ColorUtils
-	{
-		public static string Colorize(string message)
-		{
-			message = WebUtility.HtmlEncode(message);
+    public class ColorUtils
+    {
+        public static string Colorize(string message)
+        {
+            message = WebUtility.HtmlEncode(message);
 
-			Match match;
-			while ((match = Regex.Match(message, @"\^(\w+|#[\da-fA-F]{6});")).Success)
-			{
-				message = string.Format("{0}<font color='{1}'>{2}</font>",
-					WebUtility.HtmlEncode(message.Substring(0, match.Index)), WebUtility.HtmlEncode(match.Groups[1].Value), 
-					WebUtility.HtmlEncode(message.Substring(match.Index + match.Length)));
-			}
+            Match match;
+            while ((match = Regex.Match(message, @"\^(\w+|#[\da-fA-F]{6});")).Success)
+            {
+                message = string.Format("{0}<font color='{1}'>{2}</font>",
+                    message.Substring(0, match.Index), match.Groups[1].Value, message.Substring(match.Index + match.Length));
+            }
 
-			return message;
-		}
-	}
+            return message;
+        }
+    }
 }

@@ -16,26 +16,36 @@
 	<script type="text/javascript">
 		$(function () {
 			starHub.client.chatReceived = function (name, message) {
-			    $("#chat").append("&lt;" + name + "&gt; " + message + "<br/>");
-			    $("#chat").scrollTop($("#chat")[0].scrollHeight);
+			    appendToChat("&lt;" + name + "&gt; " + message + "<br/>");
 			};
 
 			starHub.client.playerJoined = function (name) {
-			    $("#chat").append("<b>Player " + name + " joined</b><br/>");
-			    $("#chat").scrollTop($("#chat")[0].scrollHeight);
+			    appendToChat("<b>Player " + name + " joined</b><br/>");
 			};
 
 			starHub.client.playerLeft = function (name) {
-			    $("#chat").append("<b>Player " + name + " left</b><br/>");
-			    $("#chat").scrollTop($("#chat")[0].scrollHeight);
+			    appendToChat("<b>Player " + name + " left</b><br/>");
 			}
 
 			starHub.client.authError = function () {
 				window.location.href = "@Url.Content("~/login")";
 			};
 
+		    starHub.client.banned = function () {
+		        appendToChat("You cannot chat here, you have been banned!");
+		    };
+
+		    $.connection.hub.disconnected(function () {
+		        appendToChat("<b>You have been disconnected from chat!</b><br/>");
+		    });
+
+		    $.connection.hub.reconnected(function () {
+		        appendToChat("<b>You have been reconnected to chat!</b><br/>");
+		    });
+
 			$(document).on("hubStarted", function () {
-				starHub.server.joinChat();
+			    starHub.server.joinChat();
+			    appendToChat("<b>You have been connected to chat!</b><br/>");
 			});
 
 			$("#chatInput").keypress(function (e) {
@@ -48,6 +58,11 @@
 			});
 
 		});
+
+        function appendToChat(message) {
+            $("#chat").append(message);
+            $("#chat").scrollTop($("#chat")[0].scrollHeight);
+        }
 
 		function sendMessage(message) {
 			starHub.server.sendMessage(message);

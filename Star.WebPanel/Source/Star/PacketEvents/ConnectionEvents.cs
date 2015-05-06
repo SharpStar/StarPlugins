@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Star.WebPanel.Hubs;
+using Star.WebPanel.Utils;
 using StarLib.Events.Packets;
 using StarLib.Logging;
 using StarLib.Packets;
@@ -29,14 +30,14 @@ namespace Star.WebPanel.Star.PacketEvents
 {
 	public class ConnectionEvents
 	{
-		[PacketEvent(PacketType.ConnectionSuccess, PacketEventType.AfterSent)]
+        private readonly IHubContext _hub = GlobalHost.ConnectionManager.GetHubContext<StarHub>();
+
+        [PacketEvent(PacketType.ConnectionSuccess, PacketEventType.AfterSent)]
 		public void OnConnectionSuccess(PacketEvent evt)
 		{
 			if (evt.Proxy.Player != null)
 			{
-				var hub = GlobalHost.ConnectionManager.GetHubContext<StarHub>();
-
-				hub.Clients.Group("chat").playerJoined(evt.Proxy.Player.Name);
+				_hub.Clients.Group("chat").playerJoined(ColorUtils.Colorize(evt.Proxy.Player.Name));
 			}
 		}
 
@@ -45,9 +46,7 @@ namespace Star.WebPanel.Star.PacketEvents
 		{
 			if (evt.Proxy.Player != null)
 			{
-				var hub = GlobalHost.ConnectionManager.GetHubContext<StarHub>();
-
-				hub.Clients.Group("chat").playerLeft(evt.Proxy.Player.Name);
+				_hub.Clients.Group("chat").playerLeft(ColorUtils.Colorize(evt.Proxy.Player.Name));
 			}
 		}
 

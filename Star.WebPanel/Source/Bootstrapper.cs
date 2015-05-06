@@ -29,6 +29,7 @@ using Nancy.Cryptography;
 using Nancy.TinyIoc;
 using Star.WebPanel.Modules;
 using Star.WebPanel.Nancy;
+using StarLib.Logging;
 
 namespace Star.WebPanel
 {
@@ -57,7 +58,6 @@ namespace Star.WebPanel
 
 		protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
 		{
-
 			//TokenAuthentication.Enable(pipelines, new TokenAuthenticationConfiguration(container.Resolve<ITokenizer>()));
 
 			//FormsConfiguration.DisableRedirect = true;
@@ -65,20 +65,6 @@ namespace Star.WebPanel
 			Startup.FormsConfiguration.UserMapper = container.Resolve<IUserMapper>();
 
 			FormsAuthentication.Enable(pipelines, Startup.FormsConfiguration);
-
-			StatelessAuthentication.Enable(container.Resolve<SecureApiModule>(), new StatelessAuthenticationConfiguration(ctx =>
-			{
-				if (!ctx.Request.Query.apikey.HasValue)
-					return null;
-
-				var userValidator = container.Resolve<StarApiUserMapper>();
-
-				Guid guid;
-				if (!Guid.TryParse(ctx.Request.Query.apiKey, out guid))
-					return null;
-
-				return userValidator.GetUserFromIdentifier(guid, ctx);
-			}));
 		}
 	}
 }
